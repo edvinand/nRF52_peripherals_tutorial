@@ -211,7 +211,7 @@ static void log_init(void)
     NRF_LOG_DEFAULT_BACKENDS_INIT();
 }
 
-void led_timer_timeout_handler(void)
+static void led_timer_timeout_handler(void * p_context)
 {
     nrf_gpio_pin_toggle(LED_1);
 }
@@ -224,7 +224,7 @@ static void application_timer_init(void)
     err_code = app_timer_init();
     APP_ERROR_CHECK(err_code);
 
-    err_code = app_timer_create(&m_led_timer_id,APP_TIMER_MODE_REPEATED, led_timer_timeout_handler);
+    err_code = app_timer_create(&m_led_timer_id, APP_TIMER_MODE_REPEATED, led_timer_timeout_handler);
     APP_ERROR_CHECK(err_code);
 
     err_code = app_timer_start(m_led_timer_id,APP_TIMER_TICKS(1000),NULL);
