@@ -1,4 +1,6 @@
 # nRF52 Peripherals Tutorial
+### Note:
+This is an update of @bjornspockeli's tutorial. Changed from SDK14.1.0 to SDK15.3.0.
 ### Brief:
 Several small tutorials/exercises that shows you how to:
 - Create an Application Timer to toggle a GPIO pin
@@ -283,3 +285,11 @@ After adding the array to hold the data and the index to keep track of how many 
 The memset function is used to clear the data_array since it is decleared as static, i.e. it will not erase the content in between the calls to `uart_event_handler`. If we do not set data_array to 0 and receive a string that is shorter than the last string we received, then some of the old data will still be stored in the array.
 6. Send a text string from the terminal to the nRF52 DK and verify that it is exhoed back to the terminal. 
 
+### More challenges
+If you want to look at some more challenges, including these subjects:
+- Temperature sensor
+- GPIOTE - GPIO Tasks and Events
+- TIMER - Timer/Counter
+- PPI - Programmable Peripheral Interconnect
+
+You can go to [Bjørns tutorial](https://github.com/bjornspockeli/nRF52_peripherals_tutorial). Although you are now working on SDK15.3.0, and Bjørns tutorial is written for SDK14.1.0, the remaining parts of this tutorial should be compatible with SDK15.3.0 as well. Good luck.
