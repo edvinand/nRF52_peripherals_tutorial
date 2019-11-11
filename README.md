@@ -165,5 +165,121 @@ The code snippet above sets the duty cycle to 0, you have to figure out the corr
 
 5. Modify the button handler from Task 3 so that you can set the servo to its minimum and maximum angle by pressing the buttons on the nRF52 DK.
 
-### 5 - UART.
+### 5 - UART
+Goal: Use the nRF52s UART peripheral and the UART library (app_uart) to echo data sent from a terminal. If you do not already have a favorite terminal application, then I recommend using Termite. The UART library is documented on this Infocenter page.
+1. Create the function `uart_init` where you use the `APP_UART_FIFO_INIT`macro to initialize the UART module. The baudrate should be set to 115200, Flow Control should be disabled, no parity bits are used and the RX and TX buffers should be set to 256 in size. The UART pins of the nRF52 DK are listed on the backside of the board. See the UART example in the `\examples\peripheral\uart\pca10040\blank\ses` folder.
+2. Create the function uart_event_handler as shown below. We will modify it later in order to receive data from the terminal. 
+```C
+    void uart_event_handler(app_uart_evt_t * p_event)
+    {
+        /*
+        You're not allowed to decleare variables inside switch-cases, 
+        so any variables used in the switch-case must be declared here.
+        */
+        switch (p_event->evt_type)
+        {
+            case APP_UART_DATA_READY:
+                /*  
+                The received data is stored in a receive buffer and can be retrieved using app_uart_get.
+                Data to be sent can be placed in the transmit buffer using app_uart_put.
+                */
+                break;
+
+            case APP_UART_COMMUNICATION_ERROR:
+                APP_ERROR_HANDLER(p_event->data.error_communication);
+                break;
+
+            case APP_UART_FIFO_ERROR:
+                APP_ERROR_HANDLER(p_event->data.error_code);
+                break;
+
+            default:
+                break;
+        }
+    }
+```
+
+3. Create a function called `uart_print()` which takes a uint8_t array as input and sends this array to the terminal using the `app_uart_put()` function.
+Hints:
+- `app_uart_put()` places one character at the time in the uart transmit buffer, hence it should be called in a loop. 
+- Strings sent to the terminal should be terminated by `\r\n\ .
+- The strlen() function is very useful to find the length of a string terminated by `\n`
+```C
+static void uart_print(uint8_t data_string[])
+{
+    
+}
+```
+
+4. Call the `uart_print` function in main() or in the button handler and verify that the message is shown in the terminal. If you do not have a uart terminal, [Termite](https://www.compuphase.com/software_termite.htm) is a good choice for Windows.
+5. The APP_UART_DATA_READY event will be generated for each single byte that is received by the nRF52, which means that [app_uart_get](https://infocenter.nordicsemi.com/index.jsp?topic=%2Fcom.nordic.infocenter.sdk5.v15.3.0%2Fgroup__app__uart.html&anchor=gacddb5b7b711ef104f9eb181a13bc4503) must be called everytime this event is received.
+```C
+    case APP_UART_DATA_READY:
+        app_uart_get(&data_array[index]);
+        index++;
+        
+        break;
+```
+
+Since the `app_uart_get()` function takes the pointer to a uint8_t, we need an array to store the received byte and an index variable to keep track of how many bytes we have received, i.e.
+```C
+    static uint8_t data_array[32];
+    static uint8_t index = 0;
+```
+Most terminals append the `\n` character, also known as the Line Feed character, to the end of the string that is sent. The `\n` indicates that the next character should be printed on a newline. Therefore it makes sense to receive bytes until we see the `\n` character and then send the entire string back to the terminal using [app_uart_put](https://infocenter.nordicsemi.com/index.jsp?topic=%2Fcom.nordic.infocenter.sdk5.v15.3.0%2Fgroup__app__uart.html&anchor=ga2e4c8407274a151e72ed5a226529dc36). 
+```C
+  if (data_array[index - 1] == '\n') 
+  {
+    // Call app_uart_put to sent the bytes stored in data_array back to the terminal.
+  }
+```  
+The function app_uart_put used to place data in the UART's transmit buffer must be called in a for-loop if more than one byte is to be sent, i.e.
+```C
+    for (uint32_t i = 0; i < strlen((const char *)data_array); i++)
+    {
+        while (app_uart_put(data_array[i]) != NRF_SUCCESS);
+    }
+```
+
+After adding the array to hold the data and the index to keep track of how many bytes we have received, adding the if statement and the for loop that calls app_uart_put(), the uart_event_handler function should look something like this:
+
+```C
+    void uart_event_handler(app_uart_evt_t * p_event)
+    {
+        static uint8_t data_array[32];
+        static uint8_t index = 0;
+
+        switch (p_event->evt_type)
+        {
+            case APP_UART_DATA_READY:
+                app_uart_get(&data_array[index]);
+                index++;
+
+                if (data_array[index - 1] == '\n') 
+                {
+                    for (uint32_t i = 0; i < strlen((const char *)data_array); i++)
+                    {
+                        while (app_uart_put(data_array[i]) != NRF_SUCCESS);
+                    }
+                    memset(data_array,0,sizeof(data_array));
+                    index = 0;
+                }
+                break;
+
+            case APP_UART_COMMUNICATION_ERROR:
+                APP_ERROR_HANDLER(p_event->data.error_communication);
+                break;
+
+            case APP_UART_FIFO_ERROR:
+                APP_ERROR_HANDLER(p_event->data.error_code);
+                break;
+
+            default:
+                break;
+        }
+    }
+```
+
+The memset function is used to clear the data_array since it is decleared as static, i.e. it will not erase the content in between the calls to `uart_event_handler`. If we do not set data_array to 0 and receive a string that is shorter than the last string we received, then some of the old data will still be stored in the array.
+6. Send a text string from the terminal to the nRF52 DK and verify that it is exhoed back to the terminal. 
 
