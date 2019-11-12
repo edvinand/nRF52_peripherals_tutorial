@@ -25,9 +25,8 @@ The template project includes all the peripheral libraries and drivers from the 
 1. Find the template_project from nRF5_SDK_15.3.0_59ac345\examples\peripheral\template_project
 2. Create a copy of the template_project folder and rename it to nRF52_peripherals_tutorial
 3. Open the template_pca10040.emProject Segger Embedded Studio project found in nRF52_peripherals_tutorial\pca10040\blank\ses
-4. Search for micro-ecc in the sdk_config.h file, and make sure all the defines containing this string is defined to 0.
-5. Remove the library (.a) file from the nRF_micro-ecc folder in the project explorer view on the left hand side. 
-6. Now the project should compile.
+4. Remove the nRF_micro_ecc library (micro_ecc_lib_nrf52.a) file from the nRF_micro-ecc folder in the project explorer view on the left hand side. 
+5. Now the project should compile.
 
 ### 1 - Blink an LED using a busy-wait loop
 Goal: Blink an LED by keeping the CPU in a busy-wait loop.
@@ -57,7 +56,12 @@ while (NRF_CLOCK->EVENTS_LFCLKSTARTED == 0)
 ```
 2. Include the app_timer.h file in your main.c file.
 3. Next, you'll need to create a application timer instance using the APP_TIMER_DEF macro.
-4. Create the function application_timer_init(), in which you initialize the application timer library, create and start the application timer. Hints: - You will need to use the functions app_timer_init(), app_timer_create() and app_timer_start() - You want to create a repeating timer, i.e. the mode of the applicaiton timer should be set to APP_TIMER_MODE_REPEATED. - The APP_TIMER_TICKS macro is very useful when setting the timeout interval. - Make sure to call the application_timer_init() function in main().
+4. Create the function application_timer_init(), in which you initialize the application timer library, create and start the application timer.</br>
+Hints: </br>- 
+You will need to use the functions app_timer_init(), app_timer_create() and app_timer_start() </br>
+- You want to create a repeating timer, i.e. the mode of the applicaiton timer should be set to APP_TIMER_MODE_REPEATED. </br>
+- The APP_TIMER_TICKS macro is very useful when setting the timeout interval. </br>
+- Make sure to call the application_timer_init() function in main().
 5. Call nrf_gpio_toogle() function to toggle one of the nRF52 DKs LEDs in the timeout handler that you specified when you initialized the application timer.
 6. Compile and flash the example to your nRF52 DK and verify that the LED is blinking. Since there are a couple of steps to do possible errors, here is a suggestion to what the functions can look like. You can get inspiration from these if you are stuck:
 ```C
@@ -123,8 +127,9 @@ void my_button_handler(uint8_t pin_no, uint8_t button_action)
 {
     // Check which pin that generated the event as well as which type of button action that caused the event.
 }
-4. Compile and flash the project to your nRF52 DK and verify that the LED is toggling when you push the button.
 ```
+4. Compile and flash the project to your nRF52 DK and verify that the LED is toggling when you push the button.
+
 ### 4 - Servo, Controlling a servo using the PWM library
 In this task we will use [Pulse-Width Modulation](https://learn.sparkfun.com/tutorials/pulse-width-modulation) to control an analog servo. The PWM library uses one of the nRF52s TIMER peripheral in addition to the PPI and GPIOTE peripherals. The app_pwm library is documented on [this]() Infocenter page.</br>
 Connecting the Servo to your nRF52 DK:
@@ -133,7 +138,7 @@ The three wires coming from the SG90/SG92R Servo are:
 - Red: 5V Should be connected to the pin marked 5V on your nRF52 DK.
 - Orange: PWM Control Signal - Should be connected to one of the unused GPIO pins of the nRF52 DK (for example P0.04, pin number 4). 
 1. The first thing we have to do is to include the header to the PWM library, `app_pwm.h` and create a PWM instance with the [APP_PWM_INSTANCE](https://infocenter.nordicsemi.com/index.jsp?topic=%2Fcom.nordic.infocenter.sdk5.v15.3.0%2Fgroup__app__pwm.html&anchor=gaf01d3e06e17705a7453d91c70d40098f) macro that uses the TIMER2 peripheral.
-2. The second thing we need to do is to create the function `pwm_init()` where we configure, initialize and enable the PWM peripheral. You configure the PWM library by creating an [app_pwm_config_t](https://infocenter.nordicsemi.com/index.jsp?topic=%2Fcom.nordic.infocenter.sdk5.v15.3.0%2Fstructapp__pwm__config__t.html) and pass it as a parameter to where the following parameters must be specified:
+2. The second thing we need to do is to create the function `pwm_init()` where we configure, initialize and enable the PWM peripheral. You configure the PWM library by creating an [app_pwm_config_t](https://infocenter.nordicsemi.com/index.jsp?topic=%2Fcom.nordic.infocenter.sdk5.v15.3.0%2Fstructapp__pwm__config__t.html) and pass it as a parameter to [app_pwm_init](https://infocenter.nordicsemi.com/index.jsp?topic=%2Fcom.nordic.infocenter.sdk5.v15.3.0%2Fgroup__app__pwm.html&anchor=gae3b3e1d5404fd776bbf7bf22224b4b0d) where the following parameters must be specified:
 - *pins:* Array of two unsigned integers that indicate which physical pins will be used for the PWM output. In one-channel mode, the second element is ignored.
 - *pin_polarity:* 2-element array of app_pwm_polarity_t that indicates the output signal polarity. In one-channel mode, the second element is ignored. 
 - *num_of_channels:* Number of PWM channels (1 or 2). 
@@ -144,7 +149,7 @@ Hints:
 - We only need one channel.
 - The second element of the pins array should be set to `APP_PWM_NOPIN`.
 - The period of the PWM pulse should be 20ms.
-3. The struct must be passed as an input to the [app_pwm_init](https://infocenter.nordicsemi.com/index.jsp?topic=%2Fcom.nordic.infocenter.sdk5.v15.3.0%2Fgroup__app__pwm.html&anchor=gae3b3e1d5404fd776bbf7bf22224b4b0d) functino which initializes the PWM library. After initializing the PWM library you have to enable the PWM instance by calling [app_pwm_enable](https://infocenter.nordicsemi.com/index.jsp?topic=%2Fcom.nordic.infocenter.sdk5.v15.3.0%2Fgroup__app__pwm.html&anchor=ga94f5d824afec86aff163f7cccedaa436).
+3. The struct must be passed as an input to the [app_pwm_init](https://infocenter.nordicsemi.com/index.jsp?topic=%2Fcom.nordic.infocenter.sdk5.v15.3.0%2Fgroup__app__pwm.html&anchor=gae3b3e1d5404fd776bbf7bf22224b4b0d) function which initializes the PWM library. After initializing the PWM library you have to enable the PWM instance by calling [app_pwm_enable](https://infocenter.nordicsemi.com/index.jsp?topic=%2Fcom.nordic.infocenter.sdk5.v15.3.0%2Fgroup__app__pwm.html&anchor=ga94f5d824afec86aff163f7cccedaa436).
 Hints:
 - We do not need to provide an event handler function, i.e. you can pass NULL instead of a function pointer. 
 - Make sure that you add `pwm_init()`to the `main()`function before the while loop.
@@ -163,13 +168,16 @@ Make the servo sweep from its maximum angle to its minimum angle. This can be do
     }
 ```
 
-The code snippet above sets the duty cycle to 0, you have to figure out the correct duty cycle values for the min and max angle.
+The code snippet above sets the duty cycle to 0, you have to figure out the correct duty cycle values for the min and max angle.</br>
+Hint:
+- The pwm duty cycle for the lowest angle on the servo motor is 1000µs, while the pwm duty cycle for the highest angle on the servo motor is 2000µs. The angles between this should gradually increase as you increase the duty cycle from 1000µs to 2000µs. These numbers are according to the specification for the [Tower Pro motor specification](https://halckemy.s3.amazonaws.com/uploads/attachments/195168/SG90Servo.pdf)</br>
+However I noticed that the min and max values on my motor is roughly 800µs and 2400µs, so experiment with different levels.
 
 5. Modify the button handler from Task 3 so that you can set the servo to its minimum and maximum angle by pressing the buttons on the nRF52 DK.
 
 ### 5 - UART
-Goal: Use the nRF52s UART peripheral and the UART library (app_uart) to echo data sent from a terminal. If you do not already have a favorite terminal application, then I recommend using Termite. The UART library is documented on this Infocenter page.
-1. Create the function `uart_init` where you use the `APP_UART_FIFO_INIT`macro to initialize the UART module. The baudrate should be set to 115200, Flow Control should be disabled, no parity bits are used and the RX and TX buffers should be set to 256 in size. The UART pins of the nRF52 DK are listed on the backside of the board. See the UART example in the `\examples\peripheral\uart\pca10040\blank\ses` folder.
+Goal: Use the nRF52s UART peripheral and the UART library (app_uart) to echo data sent from a terminal. If you do not already have a favorite terminal application, then I recommend using [Termite](https://www.compuphase.com/software_termite.htm). The UART library is documented on [this](https://infocenter.nordicsemi.com/index.jsp?topic=%2Fcom.nordic.infocenter.sdk5.v15.3.0%2Fgroup__app__uart.html) Infocenter page.
+1. Create the function `uart_init` where you use the `APP_UART_FIFO_INIT`macro to initialize the UART module. Remember to include the `app_uart.h` file near the top of your main.c file. The baudrate should be set to 115200, Flow Control should be disabled, no parity bits are used and the RX and TX buffers should be set to 256 in size. The UART pins of the nRF52 DK are listed on the backside of the board. See the UART example in the `\examples\peripheral\uart\pca10040\blank\ses` folder.
 2. Create the function uart_event_handler as shown below. We will modify it later in order to receive data from the terminal. 
 ```C
     void uart_event_handler(app_uart_evt_t * p_event)
@@ -204,8 +212,8 @@ Goal: Use the nRF52s UART peripheral and the UART library (app_uart) to echo dat
 3. Create a function called `uart_print()` which takes a uint8_t array as input and sends this array to the terminal using the `app_uart_put()` function.
 Hints:
 - `app_uart_put()` places one character at the time in the uart transmit buffer, hence it should be called in a loop. 
-- Strings sent to the terminal should be terminated by `\r\n\ .
-- The strlen() function is very useful to find the length of a string terminated by `\n`
+- Strings sent to the terminal should be terminated by `\r\n` .
+- The strlen() function is very useful to find the length of a string terminated by `\n`. If you want to use this add the following to the top of your main.c file `#include <string.h`.
 ```C
 static void uart_print(uint8_t data_string[])
 {
