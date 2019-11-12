@@ -290,7 +290,7 @@ After adding the array to hold the data and the index to keep track of how many 
     }
 ```
 
-The memset function is used to clear the data_array since it is decleared as static, i.e. it will not erase the content in between the calls to `uart_event_handler`. If we do not set data_array to 0 and receive a string that is shorter than the last string we received, then some of the old data will still be stored in the array.
+The memset function is used to clear the data_array since it is decleared as static, i.e. it will not erase the content in between the calls to `uart_event_handler`. If we do not set data_array to 0 and receive a string that is shorter than the last string we received, then some of the old data will still be stored in the array. </br>
 6. Send a text string from the terminal to the nRF52 DK and verify that it is exhoed back to the terminal. 
 
 ### More challenges
