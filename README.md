@@ -1,6 +1,6 @@
 # nRF52 Peripherals Tutorial
 ### Note:
-This is an update of @bjornspockeli's tutorial. Changed from SDK14.1.0 to SDK15.3.0.
+This is an update of @bjornspockeli's tutorial. Ported from SDK14.1.0 to SDK15.3.0. Link in the end of this tutorial.
 ### Brief:
 Several small tutorials/exercises that shows you how to:
 - Create an Application Timer to toggle a GPIO pin
@@ -173,7 +173,9 @@ Hint:
 - The pwm duty cycle for the lowest angle on the servo motor is 1000µs, while the pwm duty cycle for the highest angle on the servo motor is 2000µs. The angles between this should gradually increase as you increase the duty cycle from 1000µs to 2000µs. These numbers are according to the specification for the [Tower Pro motor specification](https://halckemy.s3.amazonaws.com/uploads/attachments/195168/SG90Servo.pdf)</br>
 However I noticed that the min and max values on my motor is roughly 800µs and 2400µs, so experiment with different levels.
 
-5. Modify the button handler from Task 3 so that you can set the servo to its minimum and maximum angle by pressing the buttons on the nRF52 DK.
+5. Modify the button handler from Task 3 so that you can set the servo to its minimum and maximum angle by pressing the buttons on the nRF52 DK. </br>
+
+**Challenge**: If you want to control the Servo in smaller steps than 1% of the PWM period, look at what app_pwm_channel_duty_set() does, and see if you can set the PWM duty cycle in smaller steps.
 
 ### 5 - UART
 Goal: Use the nRF52s UART peripheral and the UART library (app_uart) to echo data sent from a terminal. If you do not already have a favorite terminal application, then I recommend using [Termite](https://www.compuphase.com/software_termite.htm). The UART library is documented on [this](https://infocenter.nordicsemi.com/index.jsp?topic=%2Fcom.nordic.infocenter.sdk5.v15.3.0%2Fgroup__app__uart.html) Infocenter page.
