@@ -131,7 +131,7 @@ void my_button_handler(uint8_t pin_no, uint8_t button_action)
 4. Compile and flash the project to your nRF52 DK and verify that the LED is toggling when you push the button.
 
 ### 4 - Servo, Controlling a servo using the PWM library
-In this task we will use [Pulse-Width Modulation](https://learn.sparkfun.com/tutorials/pulse-width-modulation) to control an analog servo. The PWM library uses one of the nRF52s TIMER peripheral in addition to the PPI and GPIOTE peripherals. The app_pwm library is documented on [this]() Infocenter page.</br>
+In this task we will use [Pulse-Width Modulation](https://learn.sparkfun.com/tutorials/pulse-width-modulation) to control an analog servo. The PWM library uses one of the nRF52s TIMER peripheral in addition to the PPI and GPIOTE peripherals. The app_pwm library is documented on [this](https://infocenter.nordicsemi.com/index.jsp?topic=%2Fcom.nordic.infocenter.sdk5.v15.3.0%2Fgroup__app__pwm.html&anchor=gae3b3e1d5404fd776bbf7bf22224b4b0d) Infocenter page.</br>
 Connecting the Servo to your nRF52 DK:
 The three wires coming from the SG90/SG92R Servo are:
 - Brown: Ground - Should be connected to one of the pins marked GND on your nRF52 DK.
