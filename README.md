@@ -119,7 +119,8 @@ Hints:
 - The button pin number as well as the active state of the buttons can be seen on the backside of the nRF52 DK.
 - After initializing the Button Handler library with button configuration you will need to enable it. There should be an appropriate function int eh app_button API.
 
-3. In the event handler that you set in the button configuration structure you will have to check which pin as well as which action that generated the event. Add code to the event handler so that one of the LEDs of the nRF52 DK is toggled when you push one of the buttons on the nRF52 DK. Hint:
+3. In the event handler that you set in the button configuration structure you will have to check which pin as well as which action that generated the event. Add code to the event handler so that one of the LEDs of the nRF52 DK is toggled when you push one of the buttons on the nRF52 DK. 
+</br>Hint:
 - There are two button action types, APP_BUTTON_PUSH and APP_BUTTON_RELEASE.
 - You can see which pins that are connected to the different buttons on the back of the nRF52 DK.
 ```C
